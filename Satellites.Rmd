@@ -1,0 +1,44 @@
+---
+title: "Satellites"
+author: "Amanda Gaska"
+date: "January 24, 2016"
+output: html_document
+---
+```{r, results="hide"}
+library(rcharts)
+```
+
+```{r, cache=TRUE}
+setwd("~/Desktop/Developing-Data-Products-Project")
+
+sat_data <- read.csv("satellite_data.csv", header=TRUE)
+satData <- sat_data[,1:27]
+Countries <- unique(satData$Country.of.Operator.Owner)
+Uses <- unique(satData$Purpose)
+
+satData1 <- subset(satData, Country.of.Operator.Owner=="USA", select=c(Purpose))
+usesSummary <- summary(satData1$Purpose)
+usesData <- data.frame(Use = names(usesSummary), Number = usesSummary)
+usesData <- usesData[order(usesData$Number, decreasing=TRUE),]
+#usesData <- subset(usesData, Number !=0, select=c(Use, Number))
+#subset(usesData, Number !=0, select=c(Use, Number))
+uses<- as.character(unique(usesData$Use))
+
+h1 <- Highcharts$new()
+h1$series(data = usesData$Number, type = "bar", name="Satellites")
+h1$xAxis(categories = usesData$Use, ticks=23)
+h1$title(text = "Number of Satellites per Use")
+h1$chart(reduceXTicks = FALSE)
+#h1$params$height = 500
+h1
+```
+
+
+```{r}
+# n <- hPlot(x="Number", y="Use", data=usesData, type="bar")
+# n$title(text = "Number of Satellites per Use")
+# n$xAxis(title=list(text="Satellite Use"))
+# n$yAxis(title=list(text="Number of Satellites"))
+# n$chart(reduceXTicks = FALSE)
+# n
+```
